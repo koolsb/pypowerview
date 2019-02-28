@@ -2,7 +2,7 @@
 
 import setuptools
 
-VERSION = '0.1'
+VERSION = '0.2'
 
 license = """
 MIT License

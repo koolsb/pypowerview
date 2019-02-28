@@ -53,15 +53,15 @@ class PowerView:
 
     def get_status(self, shade):
         """Update status of shade."""
-        new_position = round((self.make_request("get","/api/shades/" + str(shade.id) + "?refresh=true")['shade']['positions']['position1'] / 65535) * 100)
-        shade.update_position(new_position)
+        shade.position = round((self.make_request("get","/api/shades/" + str(shade.id) + "?refresh=true")['shade']['positions']['position1'] / 65535) * 100)
+
         return shade.position
 
     def close_shade(self, shade):
         """Close a shade."""
         self.make_request("put","/api/shades/" + str(shade.id), {"shade": {"motion": "down"}})
 
-        shade.update_position(0)
+        shade.position = 0
 
         return 0
 
@@ -69,7 +69,7 @@ class PowerView:
         """Open a shade."""
         self.make_request("put","/api/shades/" + str(shade.id), {"shade": {"motion": "up"}})
 
-        shade.update_position(100)
+        shade.position = 100
 
         return 100
 
@@ -85,9 +85,9 @@ class PowerView:
             position = round(position * 65535 / 100)
             self.make_request("put","/api/shades/" + str(shade.id), { "shade": { "positions": { "posKind1": 1, "position1": position } } })
 
-            shade.update_position(round(position / 65535 * 100))
+            shade.position = round(position / 65535 * 100)
 
-            return round(position / 65535 * 100)
+            return shade.position
             
         else:
 
@@ -102,7 +102,3 @@ class Shade:
         self.id = id
         self.name = name
         self.position = position
-
-    def update_position(self, position: int):
-        self.position = position
-        return True
